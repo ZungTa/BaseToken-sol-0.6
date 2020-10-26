@@ -954,7 +954,8 @@ contract BaseToken is ERC20, Pausable, Blacklist {
         return true;
     }
 
-    function setupDecimals(uint8 decimals) public onlyOwner {
-        _setupDecimals(decimals);
-    }
+    // @dev setupDecimals 제거
+    // function setupDecimals(uint8 decimals) public onlyOwner {
+    //     _setupDecimals(decimals);
+    // }
 }
