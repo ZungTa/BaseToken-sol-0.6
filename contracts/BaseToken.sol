@@ -284,6 +284,7 @@ contract ERC20 is Context, IERC20 {
     mapping(address => mapping(address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
+    uint256 private _maximumTotalSupply;
 
     string private _name;
     string private _symbol;
@@ -307,7 +308,16 @@ contract ERC20 is Context, IERC20 {
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
+        _maximumTotalSupply = totalSupply;
         _mint(_msgSender(), totalSupply);
+    }
+
+    modifier underMaximumTotalSupply(uint256 amount) {
+        require(
+            _totalSupply.add(amount) <= _maximumTotalSupply,
+            "totalSupply exceeds maximum"
+        );
+        _;
     }
 
     /**
@@ -530,7 +540,11 @@ contract ERC20 is Context, IERC20 {
      *
      * - `to` cannot be the zero address.
      */
-    function _mint(address account, uint256 amount) internal virtual {
+    function _mint(address account, uint256 amount)
+        internal
+        virtual
+        underMaximumTotalSupply(amount)
+    {
         require(account != address(0), "ERC20: mint to the zero address");
 
         _beforeTokenTransfer(address(0), account, amount);

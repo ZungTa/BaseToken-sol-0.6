@@ -99,10 +99,10 @@ contract('BaseToken', accounts => {
             await token.transferFrom(admin, accounts[3], amount, { from: user }).should.be.fulfilled;
         });
         it('Mint', async () => {
-            const amount = 500000;
-            await token.mint(owner, amount, { from: owner }).should.be.fulfilled;
-            await token.mint(admin, amount, { from: admin }).should.be.rejectedWith("Ownable: caller is not the owner");
-            await token.mint(admin, amount, { from: owner }).should.be.fulfilled;
+            // const amount = 500000;
+            // await token.mint(owner, amount, { from: owner }).should.be.fulfilled;
+            // await token.mint(admin, amount, { from: admin }).should.be.rejectedWith("Ownable: caller is not the owner");
+            // await token.mint(admin, amount, { from: owner }).should.be.fulfilled;
         });
         it('Burn', async () => {
             const amount = 500000;
@@ -110,6 +110,10 @@ contract('BaseToken', accounts => {
             await token.transfer(accounts[3], amount, { from: owner }).should.be.fulfilled;
             await token.burn(accounts[3], amount, { from: owner }).should.be.rejectedWith("Ownable: caller is not the admin");
             await token.burn(accounts[3], amount, { from: admin }).should.be.fulfilled;
+
+            // Mint
+            await token.mint(owner, amount + 1, { from: owner }).should.be.rejectedWith("totalSupply exceeds maximum");
+            await token.mint(owner, amount, { from: owner }).should.be.fulfilled;
         });
         it('Blacklist - single address', async () => {
             await token.appointAdmin(admin, { from: owner }).should.be.fulfilled;
@@ -165,10 +169,10 @@ contract('BaseToken', accounts => {
 
             await token.appointAdmin(admin, { from: owner }).should.be.fulfilled;
 
-            await token.setupDecimals(testDecimals, { from: accounts[3] }).should.be.rejectedWith("Ownable: caller is not the owner");
-            await token.setupDecimals(testDecimals, { from: admin }).should.be.rejectedWith("Ownable: caller is not the owner");
-            await token.setupDecimals(testDecimals, { from: owner }).should.be.fulfilled;
-            assert.equal(testDecimals, await token.decimals(), "decimals not equal");
+            // await token.setupDecimals(testDecimals, { from: accounts[3] }).should.be.rejectedWith("Ownable: caller is not the owner");
+            // await token.setupDecimals(testDecimals, { from: admin }).should.be.rejectedWith("Ownable: caller is not the owner");
+            // await token.setupDecimals(testDecimals, { from: owner }).should.be.fulfilled;
+            // assert.equal(testDecimals, await token.decimals(), "decimals not equal");
         });
         it('Privilege', async () => { });
         it('Admin', async () => {
@@ -185,7 +189,9 @@ contract('BaseToken', accounts => {
             await token.transferOwnership(newOnwer, { from: owner }).should.be.fulfilled;
             assert.equal(newOnwer, await token.owner(), "owner not equal");
         });
-        it('', async () => { });
+        it('totalSupply', async () => {
+            await token.appointAdmin(admin, { from: owner }).should.be.fulfilled;
+        });
         it('', async () => { });
         it('', async () => { });
         it('', async () => { });
